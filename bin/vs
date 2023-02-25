@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+require "fileutils"
+
+APP_ROOT = File.expand_path("..", __dir__)
+require File.expand_path("config/boot", APP_ROOT)
+require "thor"
+
+require File.expand_path('lib/command', Dir.pwd)
+
+Command.start

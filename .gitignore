@@ -1,0 +1,10 @@
+vendor/**/*
+!vendor/.gitkeep
+
+tmp/**/*
+!tmp/.gitkeep
+
+raw/**/*
+!raw/.gitkeep
+
+.env

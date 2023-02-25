@@ -29,10 +29,10 @@ class Command < Thor
 
         include_patterns = matcher.patterns.select { |pattern| !pattern.start_with?("!") }
           .map { |pattern| File.expand_path(pattern, APP_ROOT) }
-        Dir.glob(include_patterns).each do |file|
-          next if ignore_globs.include?(file)
-
-          file
+        Dir.glob(incluxde_patterns).select do |file|
+          ignore = ignore_globs.include?(file)
+          puts "Encrypt ignore: #{file}" if ignore
+          !ignore
         end
       end
     end.flatten

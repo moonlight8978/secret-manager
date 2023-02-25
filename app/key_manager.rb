@@ -21,8 +21,8 @@ class KeyManager
   def encrypt(filename, iv)
     file_absolute_path = File.expand_path(filename, APP_ROOT)
     dest_filename = Base64.strict_encode64(filename)
-    dest_path = File.expand_path("encrypted/#{Base64.strict_encode64(filename)}", APP_ROOT)
-    meta_path = "#{dest_path}.yml"
+    dest_path = File.expand_path("encrypted/#{Base64.strict_encode64(filename)}.enc", APP_ROOT)
+    meta_path = dest_path.ext(".yml")
 
     meta =
       if File.exists?(meta_path)
@@ -33,10 +33,11 @@ class KeyManager
           iv: iv
         }.tap do |m|
           File.open(meta_path, "w") do |meta_f|
-            meta_f << meta.to_yaml
+            meta_f << m.to_yaml
           end
         end
       end
+
 
     aes.encrypt
     aes.key = secret
@@ -46,21 +47,23 @@ class KeyManager
       File.foreach(file_absolute_path) do |line|
         cipher_text = aes.update(line)
         cipher_text << aes.final
-        p Base64.strict_encode64(cipher_text)
         cipher_f.puts Base64.strict_encode64(cipher_text)
       end
     end
+
+    puts "Encrypt finished: #{filename}"
   end
 
   def decrypt(filename64, **options)
     debug_enabled = options.fetch(:debug) { false }
 
     filename = Base64.strict_decode64(filename64)
-    from_path = File.expand_path("encrypted/#{filename64}", APP_ROOT)
-    meta_path = "#{from_path}.yml"
+    from_path = File.expand_path("encrypted/#{filename64}.enc", APP_ROOT)
+    meta_path = from_path.ext(".yml")
 
     meta = YAML.load(File.read(meta_path))
     dest_path = debug_enabled ? File.expand_path("raw/#{filename64}", APP_ROOT) : File.expand_path(meta.fetch(:from), APP_ROOT)
+
 
     aes.decrypt
     aes.key = secret
@@ -73,5 +76,7 @@ class KeyManager
         plain_f.puts(plain)
       end
     end
+
+    puts "Decrypt finished: #{filename}"
   end
 end

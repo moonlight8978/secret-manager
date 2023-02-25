@@ -8,3 +8,4 @@ gem 'activesupport', '~> 7.0', '>= 7.0.4'
 gem 'activemodel', '~> 7.0', '>= 7.0.4'
 gem 'thor', '~> 1.2', '>= 1.2.1', require: false
 gem 'zeitwerk', '~> 2.6', '>= 2.6.7'
+gem 'rake', '~> 13.0', '>= 13.0.6'

@@ -7,9 +7,14 @@ require 'digest'
 require 'base64'
 require 'securerandom'
 require 'yaml'
+require 'find'
+require 'set'
+require 'pathname'
 
 Bundler.setup
 Bundler.require
+
+require 'active_support/all'
 
 Config.load_and_set_settings "config/settings.yml", "config/settings.local.yml"
 

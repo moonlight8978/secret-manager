@@ -1,0 +1,8 @@
+includes:
+  - ~/.ssh/moonlight.pub
+  - patterns:
+      - ./*.txt
+  # - patterns:
+  #     - ~/.ssh/**/*
+  #     - "!~/.ssh/config"
+  #     - "!~/.ssh/known_hosts*"

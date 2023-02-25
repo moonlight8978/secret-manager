@@ -8,3 +8,4 @@ raw/**/*
 !raw/.gitkeep
 
 .env
+config/settings.*local.yml

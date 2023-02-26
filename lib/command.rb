@@ -18,7 +18,7 @@ class Command < Thor
     kms = KeyManager.new(key_from_config)
 
     home_dir = File.expand_path("~", APP_ROOT)
-    files = Settings.includes.map do |matcher|
+    files = Settings.cipher.map do |matcher|
       if matcher.is_a?(String)
         File.expand_path(matcher, APP_ROOT)
       elsif matcher.patterns
@@ -52,6 +52,43 @@ class Command < Thor
     Dir.glob(['encrypted/*.enc']).each do |file|
       kms.decrypt(File.basename(file, ".*"), debug: debug_from_config)
     end
+  end
+
+  desc "backup", "Backup files"
+  method_option :debug, :aliases => "-d", :desc => "Debug enabled"
+  def backup
+    backup_service = BackupService.new
+
+    home_dir = File.expand_path("~", APP_ROOT)
+    files = Settings.backup.map do |matcher|
+      if matcher.is_a?(String)
+        File.expand_path(matcher, APP_ROOT)
+      elsif matcher.patterns
+        ignore_patterns = matcher.patterns.select { |pattern| pattern.start_with?("!") }
+          .map { |pattern| File.expand_path(pattern.slice(1..), APP_ROOT) }
+
+        include_patterns = matcher.patterns.select { |pattern| !pattern.start_with?("!") }
+          .map { |pattern| File.expand_path(pattern, APP_ROOT) }
+
+        Dir.glob(include_patterns).select do |file|
+          ignore = ignore_patterns.any? { |pattern| File.fnmatch(pattern, file) }
+          puts "Backup ignore: #{file}" if ignore
+          !ignore
+        end
+      end
+    end.flatten
+      .map do |glob|
+        glob.gsub(APP_ROOT, ".").gsub(home_dir, "~")
+      end
+      .each do |filename|
+        backup_service.backup(filename)
+      end
+  end
+
+  desc "restore", "Restore files"
+  method_option :debug, :aliases => "-d", :desc => "Debug enabled"
+  def restore
+
   end
 
   private

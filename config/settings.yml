@@ -1,4 +1,4 @@
-includes:
+cipher:
   - ~/.ssh/moonlight.pub
   - patterns:
       - ./*.txt
@@ -6,3 +6,6 @@ includes:
   #     - ~/.ssh/**/*
   #     - "!~/.ssh/config"
   #     - "!~/.ssh/known_hosts*"
+backup:
+  - patterns:
+      - ./*.txt

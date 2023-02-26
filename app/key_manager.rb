@@ -69,6 +69,8 @@ class KeyManager
     aes.key = secret
     aes.iv = Base64.strict_decode64(meta[:iv])
 
+    FileUtils.mkdir_p(File.dirname(dest_path))
+
     File.open(dest_path, "w") do |plain_f|
       File.foreach(from_path, chomp: true) do |line|
         plain = aes.update(Base64.strict_decode64(line))
